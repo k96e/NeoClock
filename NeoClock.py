@@ -15,33 +15,6 @@ link = "http://www.nmc.cn/rest/real/58436"
 wdayList = ["周一","周二","周三","周四","周五","周六","周日"]
 
 
-def getExtraMsg():
-    try:
-        print("upd")
-        keywords = ["台海","台岛","解放军","演练","军演","台湾","佩洛西","窜台","涉台",
-            "访台","七国集团","台独","战区","演习","演训","解放军","一个中国","一中","G7"]
-        results = []
-        r = requests.get("https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space?"+
-            "offset=&host_mid=483787858&timezone_offset=-480",timeout=0.5).json()
-        for item in r["data"]["items"]:
-            if item["modules"]["module_dynamic"]["major"]["type"]=="MAJOR_TYPE_DRAW":
-                desc = item["modules"]["module_dynamic"]["desc"]["text"].replace(" ",'')
-                if any(k in desc for k in keywords):
-                    if "【"in desc and "】" in desc:
-                        timestr = item["modules"]["module_author"]["pub_ts"]
-                        results.append(time.strftime('%H:%M',time.localtime(timestr))+
-                            "-"+desc.split("】")[0].split("【")[-1])
-            elif item["modules"]["module_dynamic"]["major"]["type"]=="MAJOR_TYPE_ARCHIVE":
-                desc = item["modules"]["module_dynamic"]\
-                    ["major"]["archive"]["title"].replace(" ",'')
-                if any(k in desc for k in keywords):
-                    timestr = item["modules"]["module_author"]["pub_ts"]
-                    results.append(time.strftime('%H:%M',time.localtime(timestr))+
-                        "-"+desc)
-        return '\n'.join(results[:3])
-    except:
-        return 'err'             
-
 def handleTraceback(errStr):
     global root
     if "SystemExit: 0" in errStr:
@@ -50,36 +23,19 @@ def handleTraceback(errStr):
     root.quit()
     exit(0)
 
-'''
-倒计时文本生成
-20307江南十校
-0:  消息类型  0:禁用 1-3:年份(2021-2023)
-1-4:生效时间mmdd
-5+: 文本
-'''
-def getCountdown(data):
-    if len(data)==0:
-        return ''
-    elif data[0]=='0':
-        return ''
-    elif data[0] in ['1','2','3']:
-        delta = (datetime.datetime.strptime('202'+data[0:5],"%Y%m%d")-\
-            datetime.datetime.strptime(\
-            time.strftime('%Y%m%d',time.localtime(time.time())),"%Y%m%d")).days
-        if delta > 0:
-            return "距 "+data[5:]+" 还有 "+str(delta)+" 天"
-        elif delta >= -1:
-            return data[5:]+"day"+str(-delta)
+
+def getCountdown():
+    delta = (1686099600-time.time())/86400
+    if delta >= 0:
+        return "距高考还有 %.4f 天" % delta
     else:
-        return data
+        return ""
     
 def getConf():
-    global scheText,countdownText,extraFlag
+    global scheText
     with open(r"D:\clock\conf.ini",encoding='utf-8') as f:
         wday = time.localtime(time.time()).tm_wday
         dat = json.load(f)
-        countdownText = getCountdown(dat['countd'])
-        extraFlag = False if dat["extraFlag"] == '0' else True
         if time.localtime(time.time()).tm_hour >= 21:
             wday = wday+1 if not wday == 6 else 0
             schData = dat['sche'][wday]
@@ -88,13 +44,11 @@ def getConf():
             schData = dat['sche'][wday]
             scheText = wdayList[wday]+"  "+schData
         
-def setConf(newd=None,newFlag='hold'):
+def setConf(newd=None):
     with open(r"D:\clock\conf.ini", "r+",encoding='utf-8') as jsonFile:
         data = json.load(jsonFile)
         if newd:
             data["countd"] = newd
-        if type(newFlag) == bool:
-            data["extraFlag"] = '1' if newFlag else '0'
         jsonFile.seek(0)
         json.dump(data, jsonFile,ensure_ascii=False)
         jsonFile.truncate()
@@ -110,14 +64,11 @@ def updateWeather():
             time.sleep(0.4)
 
 def setTime():
-    global t,root,extraLabel,extraText,extraFlag
+    global t,root,countdownLabel
     try:
         ctime = time.localtime(time.time())
         t.config(text=time.strftime('%H:%M:%S',ctime))
-        # if (ctime.tm_sec == 0) and extraFlag:
-            # extraText = getExtraMsg()
-            # if not extraText=='err':
-                # extraLabel.config(text=extraText)
+        countdownLabel.config(text=getCountdown())
         if (ctime.tm_min%10 == 0 and ctime.tm_sec == 0):
             timedWork()
             if (ctime.tm_hour == 21 and (ctime.tm_min == 10 or ctime.tm_min == 20) and ctime.tm_sec == 0):
@@ -130,13 +81,9 @@ def setTime():
     except:
         handleTraceback(traceback.format_exc())
 
-'''
-处理远程控制请求
-data:
-key value
-''' 
+
 def getData():
-    global scheText,countdownText,root,extraFlag,extraLabel,extraText
+    global scheText,root
     if os.path.isfile(r"D:\clock\.dataTrans"):
         with open(r"D:\clock\.dataTrans",'r') as f:
             data = f.read()
@@ -147,19 +94,6 @@ def getData():
             if key=='updateNow':
                 timedWork()
                 timedWork(False)
-            elif key=="setCountdownMsg":
-                countdownText = getCountdown(value)
-                timedWork(False)
-                setConf(newd=value)
-            elif key=="setExtraFlag":
-                extraFlag = not extraFlag
-                if not extraFlag:
-                    extraText = ""
-                    extraLabel.config(text="")
-                else:
-                    extraText = getExtraMsg()
-                    extraLabel.config(text=extraText)
-                setConf(newFlag=extraFlag)
             elif key=="setPos":
                 try:
                     x,y=value.split(',')
@@ -170,13 +104,11 @@ def getData():
 
 
 def timedWork(autoUpdate=True):
-    global scheText,countdownText,\
-        dateLabel,weatherLabel,scheLable,countdownLabel
+    global scheText,dateLabel,weatherLabel,scheLable
     if autoUpdate:
         updateWeather()
     else:
         getConf()
-        countdownLabel.config(text=countdownText)
         scheLable.config(text=scheText)
         dateLabel.config(text=time.strftime(' %m{m}%d{d}',
             time.localtime(time.time())).format(m='月',d='日'))
@@ -188,12 +120,9 @@ def quitWin(events):
         exit(0)
 
 try:
-    countdownText=""
     scheText=""
-    extraText=""
-    extraFlag=False
     getConf()
-    root = tk.Tk("NewClock")
+    root = tk.Tk("NeoClock")
     root.overrideredirect(True)
     root.geometry(defaultPos)
     root.geometry("500x280")
@@ -225,7 +154,7 @@ try:
         )
     t.pack()
     countdownLabel = tk.Label(root,
-        text=countdownText,
+        text=getCountdown(),
         fg='white',     
         bg='black',
         font=('Yahei Consolas Hybrid', 28),
@@ -238,22 +167,9 @@ try:
         font=('Yahei Consolas Hybrid', 20),
         )
     scheLable.pack()
-    extraLabel = tk.Label(root,
-        text=extraText,
-        fg='white',     
-        bg='black',
-        wraplength=480,
-        anchor='w',
-        justify='left',
-        font=('Yahei Consolas Hybrid', 12),
-        )
-    extraLabel.pack()
     time.sleep(1)
     #requests.get("http://192.168.40.143:5835",timeout=1)
     updateWeather()
-    if extraFlag:
-        extraText=getExtraMsg()
-        extraLabel.config(text=extraText)
     setTime()
     root.bind("<Double-Button-1>",quitWin)
     #root.wm_attributes('-topmost', 1)

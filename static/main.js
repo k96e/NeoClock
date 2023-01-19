@@ -79,9 +79,6 @@ var imgEle = document.getElementById("screenImg");
 document.getElementById("loadImg").onclick=function(){
 	imgEle.src="/getNewScreenshot";
 };
-document.getElementById("sendMsg").onclick=function(){
-	sendAPI('setCountdownMsg',document.getElementById("inMsg").value);
-};
 document.getElementById("sendPos").onclick=function(){
 	sendAPI('setPos',document.getElementById("inPos").value);
 };

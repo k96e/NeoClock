@@ -2,7 +2,7 @@
     <head>
         <meta name="generator"
         content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
-        <title>NewClock</title>
+        <title>NeoClock</title>
         <link href="static/mui.min.css" rel="stylesheet" type="text/css" />
 		<link href="static/iziToast.min.css" rel="stylesheet" type="text/css" >
         <script src="static/mui.min.js"></script>
@@ -13,9 +13,6 @@
         <ul class="mui-tabs__bar">
             <li class="mui--is-active">
                 <a data-mui-toggle="tab" data-mui-controls="pane1">屏幕截图</a>
-            </li>
-            <li>
-                <a data-mui-toggle="tab" data-mui-controls="pane2">设置文字</a>
             </li>
             <li>
                 <a data-mui-toggle="tab" data-mui-controls="pane3">位置控制</a>
@@ -38,13 +35,6 @@
         <button id='loadImg' class="mui-btn mui-btn--primary">Load</button>
 		<a class="mui-btn mui-btn--primary" href="/source?FileName=screenshot.png" download>下载</a>
 		</div>
-        <div class="mui-tabs__pane" id="pane2" style='padding:10px'>
-            <div class="mui-textfield">
-                <input id='inMsg' type="text" style="width:20%" placeholder="Input Here..." />
-            </div>
-            <button id='sendMsg' class="mui-btn mui-btn--primary">send</button>
-            <br />
-        </div>
         <div class="mui-tabs__pane" id="pane3" style='padding:10px'>
 			默认位置1405,15/925,15
             <div class="mui-textfield">
@@ -112,7 +102,6 @@
             <button onclick="sendAPI('updateNow','none')" class="mui-btn mui-btn--primary">刷新</button>
             <button onclick="window.open('/log')" class="mui-btn mui-btn--primary">查看日志</button>
             <button onclick="sendCTR('clearLog','none')" class="mui-btn mui-btn--primary">清空日志</button>
-            <button onclick="sendAPI('setExtraFlag','none')" class="mui-btn mui-btn--primary">ExtraFlag</button>
             <button onclick="window.open('/source?FileName=Websupport.py')" class="mui-btn mui-btn--primary">查看源码</button>
             <button id='capImg' class="mui-btn mui-btn--primary">捕获图像</button>
 			 <br>
@@ -122,11 +111,6 @@
 			 <button onclick="sendCTR('ftp',document.getElementById('ftp_path').value)" class="mui-btn mui-btn--primary">启动FTP</button>
             <button onclick="sendCTR('ftp_stat','none')" class="mui-btn mui-btn--primary">FTP状态</button>
 			 <button onclick="sendCTR('ftp_kill','none')" class="mui-btn mui-btn--primary">关闭FTP</button>
-			 <br>
-			 <button onclick="sendCTR('rtmp','none')" class="mui-btn mui-btn--primary">启动rtmp</button>
-            <button onclick="sendCTR('rtmp_stat','none')" class="mui-btn mui-btn--primary">rtmp状态</button>
-			 <button onclick="sendCTR('rtmp_kill','none')" class="mui-btn mui-btn--primary">关闭rtmp</button>
-			
         </div>
         <script src="static/main.js"></script>
     </body>

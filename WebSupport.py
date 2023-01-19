@@ -9,7 +9,6 @@ import os
 pyautogui.FAILSAFE = False
 app = Flask("WebSupport")
 ftpd = False
-rtmpd = False
 #app.config["SEND_FILE_MAX_AGE_DEFAULT"]=0
 import time
 
@@ -35,7 +34,7 @@ def commAPI():
 
 @app.route("/Mapi", methods=['GET'])
 def MAPI():
-    global ftpd,rtmpd
+    global ftpd
     key = request.args.get('k','')
     value = request.args.get('v','')
     try:
@@ -69,24 +68,6 @@ def MAPI():
                 return "ok"
             else:
                 return "ftp not running"
-        elif key=="rtmp":
-            if not rtmpd:
-                rtmpd = subprocess.Popen('"D:\\Program Files\\Screen Capturer Recorder\\configuration_setup_utility\\vendor\\ffmpeg\\bin\\ffmpeg.exe" -f dshow -i audio="virtual-audio-capturer" -acodec aac -f flv -strict -2 rtmp://192.168.40.143/live/1',cwd="D:\\Program Files\\Screen Capturer Recorder\\configuration_setup_utility\\vendor\\ffmpeg\\bin")
-                return "ok"
-            else:
-                return "rtmp already started"
-        elif key=="rtmp_stat":
-            if rtmpd:
-                return str(rtmpd.poll())
-            else:
-                return "rtmp not running"
-        elif key=="rtmp_kill":
-            if rtmpd:
-                rtmpd.kill()
-                rtmpd = False
-                return "ok"
-            else:
-                return "rtmp not running"
         elif key=="writeCopy":
             pyperclip.copy(value)
         elif key=="getWindows":
