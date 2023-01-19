@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <meta name="generator"
+        content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
+        <title>NewClock</title>
+        <link href="static/mui.min.css" rel="stylesheet" type="text/css" />
+		<link href="static/iziToast.min.css" rel="stylesheet" type="text/css" >
+        <script src="static/mui.min.js"></script>
+        <script src="static/jquery.min.js"></script>
+		<script src="static/iziToast.min.js" type="text/javascript"></script>
+    </head>
+    <body style='padding:5px'>
+        <ul class="mui-tabs__bar">
+            <li class="mui--is-active">
+                <a data-mui-toggle="tab" data-mui-controls="pane1">屏幕截图</a>
+            </li>
+            <li>
+                <a data-mui-toggle="tab" data-mui-controls="pane2">设置文字</a>
+            </li>
+            <li>
+                <a data-mui-toggle="tab" data-mui-controls="pane3">位置控制</a>
+            </li>
+            <li>
+                <a data-mui-toggle="tab" data-mui-controls="pane4">发送链接</a>
+            </li>
+            <li>
+                <a data-mui-toggle="tab" data-mui-controls="pane5">窗口控制</a>
+            </li>
+            <li>
+                <a data-mui-toggle="tab" data-mui-controls="pane6">按键注入</a>
+            </li>
+            <li>
+                <a data-mui-toggle="tab" data-mui-controls="pane7">更多</a>
+            </li>
+        </ul>
+        <div class="mui-tabs__pane mui--is-active" id="pane1" style='padding:10px'>
+        <img id='screenImg' style='max-width: 80%;' /> 
+        <button id='loadImg' class="mui-btn mui-btn--primary">Load</button>
+		<a class="mui-btn mui-btn--primary" href="/source?FileName=screenshot.png" download>下载</a>
+		</div>
+        <div class="mui-tabs__pane" id="pane2" style='padding:10px'>
+            <div class="mui-textfield">
+                <input id='inMsg' type="text" style="width:20%" placeholder="Input Here..." />
+            </div>
+            <button id='sendMsg' class="mui-btn mui-btn--primary">send</button>
+            <br />
+        </div>
+        <div class="mui-tabs__pane" id="pane3" style='padding:10px'>
+			默认位置1405,15/925,15
+            <div class="mui-textfield">
+                <input id='inPos' type="text" style="width:20%" placeholder="Input Here..." />
+            </div>
+            <button id='sendPos' class="mui-btn mui-btn--primary">send</button>
+            <br />
+        </div>
+        <div class="mui-tabs__pane" id="pane4" style='padding:10px'>发送链接到宿主机（输入完整链接）
+        <div class="mui-textfield">
+            <input id='inURL' type="text" style="width:50%" placeholder="Input URL Here..." />
+        </div>
+        <button id='sendURL' class="mui-btn mui-btn--primary">send</button>
+            <button onclick="sendCTR('ctrWindow_act','chrome')" class="mui-btn mui-btn--primary">激活浏览器</button>
+            <button onclick="sendK('ctrl w')" class="mui-btn mui-btn--primary">关闭标签页</button>
+        <br /></div>
+        <div class="mui-tabs__pane" id="pane5" style='padding:10px'>
+            <button id='getWindows' class="mui-btn mui-btn--primary">get</button>
+            <div class="mui-textfield">
+                <input id='inWindow' type="text" style="width:50%" placeholder="Input Here..." />
+            </div>
+            <button id='sendWindowAct' class="mui-btn mui-btn--primary">激活</button>
+            <button id='sendWindowMax' class="mui-btn mui-btn--primary">最大化</button>
+            <button id='sendWindowRst' class="mui-btn mui-btn--primary">还原</button>
+            <button id='sendWindowMin' class="mui-btn mui-btn--primary">最小化</button>
+            <button id='sendWindowExt' class="mui-btn mui-btn--primary">关闭</button>
+            <br />
+        </div>
+        <div class="mui-tabs__pane" id="pane6" style='padding:10px'>
+            <button onclick="sendK('space')" class="mui-btn mui-btn--primary">空格</button>
+            <button onclick="sendK('volumeup')" class="mui-btn mui-btn--primary">音量加</button>
+            <button onclick="sendK('volumemute')" class="mui-btn mui-btn--primary">静音</button>
+            <button onclick="sendK('volumedown')" class="mui-btn mui-btn--primary">音量减</button>
+            <button onclick="sendK('ctrl w')" class="mui-btn mui-btn--primary">关闭标签页</button>
+			<br/>
+            <button onclick="sendK('enter')" class="mui-btn mui-btn--primary">回车</button>
+            <button onclick="sendK('ctrl c')" class="mui-btn mui-btn--primary">复制</button>
+            <button onclick="sendK('ctrl v')" class="mui-btn mui-btn--primary">粘贴</button>
+            <button onclick="sendK('backspace')" class="mui-btn mui-btn--primary">退格</button>
+            <button onclick="sendK('ctrl a')" class="mui-btn mui-btn--primary">全选</button>
+            <button onclick="sendK('tab')" class="mui-btn mui-btn--primary">Tab</button>
+			<br/>
+            <button onclick="sendK('up')" class="mui-btn mui-btn--primary">↑</button>
+            <button onclick="sendK('down')" class="mui-btn mui-btn--primary">↓</button>
+            <button onclick="sendK('left')" class="mui-btn mui-btn--primary">←</button>
+            <button onclick="sendK('right')" class="mui-btn mui-btn--primary">→</button>
+            <button onclick="sendK('pageup')" class="mui-btn mui-btn--primary">上页</button>
+            <button onclick="sendK('pagedown')" class="mui-btn mui-btn--primary">下页</button>
+			<br/>
+			<button id='readCopy' style="display: inline" class="mui-btn mui-btn--primary">读剪贴板</button>
+            <div class="mui-textfield" style="display: inline">
+                <input id='copyboard' style="display: inline;width:10%" type="text" placeholder="" />
+            </div>
+            <button id='writeCopy' class="mui-btn mui-btn--primary">写剪贴板</button>
+            <br />
+            <div class="mui-textfield" style="display: inline">
+                <input id='inKey' style="display: inline;width:10%" type="text" placeholder="e.g. 'ctrl c'" />
+            </div>
+            <button id='sendMKey' style="display: inline" class="mui-btn mui-btn--primary">send</button>
+            <button onclick="window.open('/keys')" class="mui-btn mui-btn--primary">按键列表</button>
+            <br />
+        </div>
+        <div class="mui-tabs__pane" id="pane7" style='padding:10px'>
+            <button onclick="sendCTR('test','none')" class="mui-btn mui-btn--primary">连接测试</button>
+            <button onclick="sendAPI('updateNow','none')" class="mui-btn mui-btn--primary">刷新</button>
+            <button onclick="window.open('/log')" class="mui-btn mui-btn--primary">查看日志</button>
+            <button onclick="sendCTR('clearLog','none')" class="mui-btn mui-btn--primary">清空日志</button>
+            <button onclick="sendAPI('setExtraFlag','none')" class="mui-btn mui-btn--primary">ExtraFlag</button>
+            <button onclick="window.open('/source?FileName=Websupport.py')" class="mui-btn mui-btn--primary">查看源码</button>
+            <button id='capImg' class="mui-btn mui-btn--primary">捕获图像</button>
+			 <br>
+			 <div class="mui-textfield" style="display: inline">
+			  <input id='ftp_path' style="display: inline;width:10%" type="text" placeholder="" value="F:/" />
+			 </div>
+			 <button onclick="sendCTR('ftp',document.getElementById('ftp_path').value)" class="mui-btn mui-btn--primary">启动FTP</button>
+            <button onclick="sendCTR('ftp_stat','none')" class="mui-btn mui-btn--primary">FTP状态</button>
+			 <button onclick="sendCTR('ftp_kill','none')" class="mui-btn mui-btn--primary">关闭FTP</button>
+			 <br>
+			 <button onclick="sendCTR('rtmp','none')" class="mui-btn mui-btn--primary">启动rtmp</button>
+            <button onclick="sendCTR('rtmp_stat','none')" class="mui-btn mui-btn--primary">rtmp状态</button>
+			 <button onclick="sendCTR('rtmp_kill','none')" class="mui-btn mui-btn--primary">关闭rtmp</button>
+			
+        </div>
+        <script src="static/main.js"></script>
+    </body>
+</html>
